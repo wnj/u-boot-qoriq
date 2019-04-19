@@ -1,0 +1,15 @@
+/*
+ * Copyright 2019 Scalys B.V.
+ * opensource@scalys.com
+ *
+ * SPDX-License-Identifier:	GPL-2.0+
+ */
+
+/dts-v1/;
+#include "trustbox.dtsi"
+
+/ {
+       chosen {
+               stdout-path = &duart0;
+       };
+};
