@@ -11,9 +11,20 @@
 #define CONFIG_SYS_MEMTEST_START	0x80000000
 #define CONFIG_SYS_MEMTEST_END		0x9fffffff
 
+/* SPI */
+#define CONFIG_FSL_DSPI1
+#define CONFIG_DEFAULT_SPI_BUS				0
+#define MMAP_DSPI					DSPI1_BASE_ADDR
+#define CONFIG_SYS_DSPI_CTAR0   			1
+#define CONFIG_SYS_DSPI_CTAR1				1
+#define CONFIG_SF_DEFAULT_SPEED				10000000
+#define CONFIG_SF_DEFAULT_MODE				SPI_MODE_0
+#define CONFIG_SF_DEFAULT_BUS				0
+#define CONFIG_SF_DEFAULT_CS				0
+
 /* Size of malloc() pool */
 #undef CONFIG_SYS_MALLOC_LEN
-#define CONFIG_SYS_MALLOC_LEN				(0x60000 + 128 * 1024 + 0x100000)
+#define CONFIG_SYS_MALLOC_LEN		(0x60000 + 128 * 1024 + 0x100000)
 
 #define CONFIG_SPI_FLASH_STMICRO
 #define CONFIG_SPI_FLASH_BAR
@@ -83,6 +94,147 @@
 		"256k(ppa_hdr)," \
 		"-(UBI)"
 
+#ifndef CONFIG_SPL_BUILD
+#undef BOOT_TARGET_DEVICES
+#define BOOT_TARGET_DEVICES(func) \
+	func(MMC, mmc, 0) \
+	func(USB, usb, 0) \
+/*	func(SCSI, scsi, 0) \	*/
+/*	func(DHCP, dhcp, na)	*/
+#endif
+
+/* Default environment variables */
+#define COMMON_UBOOT_CONFIG \
+	"update_tftp_uboot_qspi_nor=" \
+        "dhcp;" \
+        "tftp $load_addr $update_files_path/u-boot-with-pbl.bin;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase u-boot 200000;" \
+		"sf write $load_addr u-boot $filesize;" \
+        "fi\0" \
+	"update_tftp_uboot_hdr_qspi_nor=" \
+        "dhcp;" \
+        "tftp $load_addr $update_files_path/hdr_uboot.out;" \
+        "if test $? = \"0\"; then " \
+               "sf probe 0:0;" \
+               "sf erase u-boot_hdr 40000;" \
+               "sf write $load_addr u-boot_hdr $filesize;" \
+        "fi\0" \
+	"update_tftp_ppa_qspi_nor=" \
+        "dhcp;" \
+        "tftp $load_addr $update_files_path/ppa.itb;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase ppa 100000;" \
+		"sf write $load_addr ppa $filesize;" \
+        "fi\0" \
+	"update_tftp_ppa_hdr_qspi_nor=" \
+        "dhcp;" \
+        "tftp $load_addr $update_files_path/hdr_ppa.out;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase ppa_hdr 40000;" \
+		"sf write $load_addr ppa_hdr $filesize;" \
+        "fi\0" \
+	"update_tftp_pfe_qspi_nor=" \
+        "dhcp;" \
+        "tftp $load_addr $update_files_path/pfe_fw_sbl.itb;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase pfe 40000;" \
+		"sf write $load_addr pfe $filesize;" \
+        "fi\0" \
+	"update_usb_uboot_qspi_nor=" \
+        "usb start;" \
+        "fatload usb 0:1 $load_addr $update_files_path/u-boot-with-pbl.bin;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase u-boot 200000;" \
+		"sf write $load_addr u-boot $filesize;" \
+        "fi\0" \
+	"update_usb_uboot_hdr_qspi_nor=" \
+        "usb start;" \
+        "fatload usb 0:1 $load_addr $update_files_path/hdr_uboot.out;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase u-boot_hdr 40000;" \
+		"sf write $load_addr u-boot_hdr $filesize;" \
+        "fi\0" \
+	"update_usb_ppa_qspi_nor=" \
+        "usb start;" \
+        "fatload usb 0:1 $load_addr $update_files_path/ppa.itb;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase ppa 100000;" \
+		"sf write $load_addr ppa $filesize;" \
+        "fi\0" \
+	"update_usb_ppa_hdr_qspi_nor=" \
+        "usb start;" \
+        "fatload usb 0:1 $load_addr $update_files_path/hdr_ppa.out;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase ppa_hdr 40000;" \
+		"sf write $load_addr ppa_hdr $filesize;" \
+        "fi\0" \
+	"update_usb_pfe_qspi_nor=" \
+        "usb start;" \
+        "fatload usb 0:1 $load_addr $update_files_path/pfe_fw_sbl.itb;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase pfe 40000;" \
+		"sf write $load_addr pfe $filesize;" \
+        "fi\0" \
+	"update_mmc_uboot_qspi_nor=" \
+        "mmc rescan;" \
+        "ext4load mmc 0:1 $load_addr $update_files_path/u-boot-with-pbl.bin;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase u-boot 200000;" \
+		"sf write $load_addr u-boot $filesize;" \
+        "fi\0" \
+	"update_mmc_uboot_hdr_qspi_nor=" \
+        "mmc rescan;" \
+        "ext4load mmc 0:1 $load_addr $update_files_path/hdr_uboot.out;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase u-boot_hdr 40000;" \
+		"sf write $load_addr u-boot_hdr $filesize;" \
+        "fi\0" \
+	"update_mmc_ppa_qspi_nor=" \
+        "mmc rescan;" \
+        "ext4load mmc 0:1 $load_addr $update_files_path/ppa.itb;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase ppa 100000;" \
+		"sf write $load_addr ppa $filesize;" \
+        "fi\0" \
+	"update_mmc_ppa_hdr_qspi_nor=" \
+        "mmc rescan;" \
+        "ext4load mmc 0:1 $load_addr $update_files_path/hdr_ppa.out;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase ppa_hdr 40000;" \
+		"sf write $load_addr ppa_hdr $filesize;" \
+        "fi\0" \
+	"update_mmc_pfe_qspi_nor=" \
+        "mmc rescan;" \
+        "ext4load mmc 0:1 $load_addr $update_files_path/pfe_fw_sbl.itb;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase pfe 40000;" \
+		"sf write $load_addr pfe $filesize;" \
+        "fi\0" \
+	"usbboot=" \
+	"usb start;" \
+	"ext4load usb 0:1 $fdt_addr_r /boot/trustbox.dtb;" \
+	"ext4load usb 0:1 $kernel_addr_r /boot/uImage;" \
+	"setenv bootargs \"console=ttyS0,115200 earlycon=uart8250,mmio,0x21c0500 lpj=250000 loglevel=2 noinitrd  root=/dev/sda1 rootfstype=ext4 rw rootwait $mtdparts\";" \
+	"if test $? = \"0\"; then " \
+		"pfe stop;" \
+		"bootm $kernel_addr_r - $fdt_addr_r;" \
+	"fi\0" \
+
 #undef CONFIG_EXTRA_ENV_SETTINGS
 #define CONFIG_EXTRA_ENV_SETTINGS		\
 	"verify=no\0"				\
@@ -104,121 +256,34 @@
 	"ethprime=pfe_eth0\0" \
 	"ethaddr=02:00:00:ba:be:01\0" \
 	"eth1addr=02:00:00:ba:be:02\0" \
-	"tftp_path=.\0" \
+	"update_files_path=.\0" \
 	"autoload=no\0" \
-	"update_tftp_uboot_pbl_qspi_nor=" \
-        "dhcp;" \
-        "tftp $load_addr $tftp_path/u-boot-pbl.bin;" \
-        "if test $? = \"0\"; then " \
-		"sf probe 0:0;" \
-		"sf erase 0 200000;" \
-		"sf write $load_addr 0 $filesize;" \
-        "fi\0" \
-	"update_tftp_ppa_qspi_nor=" \
-        "dhcp;" \
-        "tftp $load_addr $tftp_path/ppa.itb;" \
-        "if test $? = \"0\"; then " \
-		"sf probe 0:0;" \
-		"sf erase 240000 40000;" \
-		"sf write $load_addr 240000 $filesize;" \
-        "fi\0" \
-	"update_tftp_pfe_qspi_nor=" \
-        "dhcp;" \
-        "tftp $load_addr $tftp_path/pfe_fw_sbl.itb;" \
-        "if test $? = \"0\"; then " \
-		"sf probe 0:0;" \
-		"sf erase 280000 40000;" \
-		"sf write $load_addr 280000 $filesize;" \
-        "fi\0" \
-	"update_usb_uboot_pbl_qspi_nor=" \
-        "usb start;" \
-        "fatload usb 0:1 $load_addr u-boot-pbl.bin;" \
-        "if test $? = \"0\"; then " \
-		"sf probe 0:0;" \
-		"sf erase 0 200000;" \
-		"sf write $load_addr 0 $filesize;" \
-        "fi\0" \
-	"update_usb_ppa_qspi_nor=" \
-        "usb start;" \
-        "fatload usb 0:1 $load_addr ppa.itb;" \
-        "if test $? = \"0\"; then " \
-		"sf probe 0:0;" \
-		"sf erase 240000 40000;" \
-		"sf write $load_addr 240000 $filesize;" \
-        "fi\0" \
-	"update_usb_pfe_qspi_nor=" \
-        "usb start;" \
-        "fatload usb 0:1 $load_addr pfe_fw_sbl.itb;" \
-        "if test $? = \"0\"; then " \
-		"sf probe 0:0;" \
-		"sf erase 280000 40000;" \
-		"sf write $load_addr 280000 $filesize;" \
-        "fi\0" \
-	"update_mmc_uboot_pbl_qspi_nor=" \
-        "mmc rescan;" \
-        "ext4load mmc 0:1 $load_addr /boot/u-boot-pbl.bin;" \
-        "if test $? = \"0\"; then " \
-		"sf probe 0:0;" \
-		"sf erase 0 200000;" \
-		"sf write $load_addr 0 $filesize;" \
-        "fi\0" \
-	"update_mmc_ppa_qspi_nor=" \
-        "mmc rescan;" \
-        "ext4load mmc 0:1 $load_addr /boot/ppa.itb;" \
-        "if test $? = \"0\"; then " \
-		"sf probe 0:0;" \
-		"sf erase 240000 40000;" \
-		"sf write $load_addr 240000 $filesize;" \
-        "fi\0" \
-	"update_mmc_pfe_qspi_nor=" \
-        "mmc rescan;" \
-        "ext4load mmc 0:1 $load_addr /boot/pfe_fw_sbl.itb;" \
-        "if test $? = \"0\"; then " \
-		"sf probe 0:0;" \
-		"sf erase 280000 40000;" \
-		"sf write $load_addr 280000 $filesize;" \
-        "fi\0" \
-	"mmcboot=" \
-		"ext4load mmc 0:1 $fdt_addr_r /boot/trustbox.dtb;" \
-		"ext4load mmc 0:1 $kernel_addr_r /boot/uImage;" \
-		"if test $? = \"0\"; then " \
-			"pfe stop;" \
-			"bootm $kernel_addr_r - $fdt_addr_r;" \
-		"fi\0" \
-	"scsiboot=" \
-		"ext4load scsi 0:1 $fdt_addr_r /boot/trustbox.dtb;" \
-		"ext4load scsi 0:1 $kernel_addr_r /boot/uImage;" \
-		"if test $? = \"0\"; then " \
-			"pfe stop;" \
-			"bootm $kernel_addr_r - $fdt_addr_r;" \
-		"fi\0" \
-	"netboot=" \
-		"dhcp;" \
-		"tftp $fdt_addr_r $tftp_path/trustbox.dtb;" \
-		"tftp $kernel_addr_r $tftp_path/uImage;" \
-		"if test $? = \"0\"; then " \
-			"pfe stop;" \
-			"bootm $kernel_addr_r - $fdt_addr_r;" \
-		"fi\0"
-
-
-/* Default flash specific environment variables */
-#if CONFIG_RESCUE_UBOOT_CONFIG
-#define CONFIG_EXTRA_ENV_SETTINGS		\
-		COMMON_UBOOT_CONFIG
-#undef CONFIG_BOOTCOMMAND
-#if defined(CONFIG_QSPI_BOOT) || defined(CONFIG_SD_BOOT_QSPI)
-/* recover from sd card */
-#define CONFIG_BOOTCOMMAND "run update_mmc_uboot_pbl_qspi_nor; run update_mmc_pfe_qspi_nor; run update_mmc_ppa_qspi_nor"
-#endif
-
-#else /* if CONFIG_STANDARD_UBOOT_CONFIG */
+	COMMON_UBOOT_CONFIG \
+	BOOTENV					\
+	"boot_scripts=trustbox_boot.scr trustbox_recovery.scr\0"	\
+	"default_bootargs=root=/dev/mmcblk0p1 rootfstype=ext4 rw rootwait $mtdparts\0" \
+	"default_boot=" \
+			  "setenv load_succes 1;"\
+			  "ext4load mmc 0:1 $fdt_addr_r /boot/trustbox.dtb;" \
+			  "if test $? = \"0\"; then " \
+							 "setenv load_succes 0;"\
+			  "fi;"\
+			  "env exists secureboot && ext4load mmc 0:1 $fdtheader_addr_r /boot/hdr_dtb.out;"\
+			  "env exists secureboot && esbc_validate $fdtheader_addr_r || esbc_halt;"\
+			  "ext4load mmc 0:1 $kernel_addr_r /boot/uImage;" \
+			  "if test $? = \"0\"; then " \
+							 "setenv load_succes 0;"\
+			  "fi;"\
+			  "env exists secureboot && ext4load mmc 0:1 $kernelheader_addr_r /boot/hdr_kernel.out; " \
+			  "env exists secureboot && esbc_validate $kernelheader_addr_r || esbc_halt;" \
+			  "if test $load_succes = \"0\"; then " \
+							 "pfe stop;" \
+							 "setenv bootargs $bootargs $default_bootargs;" \
+							 "bootm $kernel_addr_r - $fdt_addr_r;" \
+			  "fi\0" \
 
 #undef CONFIG_BOOTCOMMAND
-#if defined(CONFIG_QSPI_BOOT) || defined(CONFIG_SD_BOOT_QSPI)
-#define CONFIG_BOOTCOMMAND "run mmcboot"
-#endif
-#endif
+#define CONFIG_BOOTCOMMAND	"run distro_bootcmd; run default_boot"
 
 #include <asm/fsl_secure_boot.h>
 
