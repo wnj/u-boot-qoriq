@@ -105,13 +105,21 @@
 
 /* Default environment variables */
 #define COMMON_UBOOT_CONFIG \
-	"update_tftp_uboot_qspi_nor=" \
+	"update_tftp_rcw_qspi_nor=" \
         "dhcp;" \
-        "tftp $load_addr $update_files_path/u-boot-with-pbl.bin;" \
+        "tftp $load_addr $update_files_path/rcw.bin;" \
         "if test $? = \"0\"; then " \
 		"sf probe 0:0;" \
-		"sf erase u-boot 200000;" \
-		"sf write $load_addr u-boot $filesize;" \
+		"sf erase 0 10000;" \
+		"sf write $load_addr 0 $filesize;" \
+        "fi\0" \
+	"update_tftp_uboot_qspi_nor=" \
+        "dhcp;" \
+        "tftp $load_addr $update_files_path/u-boot.bin;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase 10000 1F0000;" \
+		"sf write $load_addr 10000 $filesize;" \
         "fi\0" \
 	"update_tftp_uboot_hdr_qspi_nor=" \
         "dhcp;" \
@@ -139,19 +147,35 @@
         "fi\0" \
 	"update_tftp_pfe_qspi_nor=" \
         "dhcp;" \
-        "tftp $load_addr $update_files_path/pfe_fw_sbl.itb;" \
+        "tftp $load_addr $update_files_path/pfe.itb;" \
         "if test $? = \"0\"; then " \
 		"sf probe 0:0;" \
 		"sf erase pfe 40000;" \
 		"sf write $load_addr pfe $filesize;" \
         "fi\0" \
-	"update_usb_uboot_qspi_nor=" \
-        "usb start;" \
-        "fatload usb 0:1 $load_addr $update_files_path/u-boot-with-pbl.bin;" \
+	"update_tftp_image_qspi_nor=" \
+        "dhcp;" \
+        "tftp $load_addr $update_files_path/trustbox_qspi_fw.itb;" \
         "if test $? = \"0\"; then " \
 		"sf probe 0:0;" \
-		"sf erase u-boot 200000;" \
-		"sf write $load_addr u-boot $filesize;" \
+		"sf erase 0 0x04000000;" \
+		"sf write $load_addr 0 $filesize;" \
+        "fi\0" \
+	"update_usb_rcw_qspi_nor=" \
+        "usb start;" \
+        "fatload usb 0:1 $load_addr $update_files_path/rcw.bin;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase 0 10000;" \
+		"sf write $load_addr 0 $filesize;" \
+        "fi\0" \
+	"update_usb_uboot_qspi_nor=" \
+        "usb start;" \
+        "fatload usb 0:1 $load_addr $update_files_path/u-boot.bin;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase 10000 1F0000;" \
+		"sf write $load_addr 10000 $filesize;" \
         "fi\0" \
 	"update_usb_uboot_hdr_qspi_nor=" \
         "usb start;" \
@@ -179,19 +203,35 @@
         "fi\0" \
 	"update_usb_pfe_qspi_nor=" \
         "usb start;" \
-        "fatload usb 0:1 $load_addr $update_files_path/pfe_fw_sbl.itb;" \
+        "fatload usb 0:1 $load_addr $update_files_path/pfe.itb;" \
         "if test $? = \"0\"; then " \
 		"sf probe 0:0;" \
 		"sf erase pfe 40000;" \
 		"sf write $load_addr pfe $filesize;" \
         "fi\0" \
-	"update_mmc_uboot_qspi_nor=" \
-        "mmc rescan;" \
-        "ext4load mmc 0:1 $load_addr $update_files_path/u-boot-with-pbl.bin;" \
+	"update_usb_image_qspi_nor=" \
+        "usb start;" \
+        "fatload usb 0:1 $load_addr $update_files_path/trustbox_qspi_fw.itb;" \
         "if test $? = \"0\"; then " \
 		"sf probe 0:0;" \
-		"sf erase u-boot 200000;" \
-		"sf write $load_addr u-boot $filesize;" \
+		"sf erase 0 0x04000000;" \
+		"sf write $load_addr 0 $filesize;" \
+        "fi\0" \
+	"update_mmc_rcw_qspi_nor=" \
+        "mmc rescan;" \
+        "ext4load mmc 0:1 $load_addr $update_files_path/rcw.bin;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase 0 10000;" \
+		"sf write $load_addr 0 $filesize;" \
+        "fi\0" \
+	"update_mmc_uboot_qspi_nor=" \
+        "mmc rescan;" \
+        "ext4load mmc 0:1 $load_addr $update_files_path/u-boot.bin;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase 10000 1F0000;" \
+		"sf write $load_addr 10000 $filesize;" \
         "fi\0" \
 	"update_mmc_uboot_hdr_qspi_nor=" \
         "mmc rescan;" \
@@ -219,11 +259,19 @@
         "fi\0" \
 	"update_mmc_pfe_qspi_nor=" \
         "mmc rescan;" \
-        "ext4load mmc 0:1 $load_addr $update_files_path/pfe_fw_sbl.itb;" \
+        "ext4load mmc 0:1 $load_addr $update_files_path/pfe.itb;" \
         "if test $? = \"0\"; then " \
 		"sf probe 0:0;" \
 		"sf erase pfe 40000;" \
 		"sf write $load_addr pfe $filesize;" \
+        "fi\0" \
+	"update_mmc_image_qspi_nor=" \
+        "mmc rescan;" \
+        "ext4load mmc 0:1 $load_addr $update_files_path/trustbox_qspi_fw.itb;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase 0 0x04000000;" \
+		"sf write $load_addr 0 $filesize;" \
         "fi\0" \
 	"usbboot=" \
 	"usb start;" \
