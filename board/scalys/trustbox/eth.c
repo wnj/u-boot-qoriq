@@ -64,14 +64,18 @@ int pfe_eth_board_init(struct udevice *dev)
 		default:
 			break;
 		}
-
 	case 0x3308:
 		pfe_set_phy_address_mode(priv->gemac_port,
 			priv->gem->phy_address,
 			PHY_INTERFACE_MODE_SGMII);
 		break;
+	case 0x3305:
+		pfe_set_phy_address_mode(priv->gemac_port,
+			priv->gem->phy_address,
+			PHY_INTERFACE_MODE_SGMII);
+		break;
 	default:
-		printf("unsupported SerDes PRCTL= %d (%x)\n", srds_s1, srds_s1);
+		printf("unsupported SerDes PRTCL= %d (%x)\n", srds_s1, srds_s1);
 		break;
 	}
 	return 0;
