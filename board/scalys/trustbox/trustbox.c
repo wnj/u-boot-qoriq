@@ -32,6 +32,10 @@
 #include "board_configuration_data.h"
 
 
+/* Possible SPI (NOR) flashes used as rescue memory device */
+const char* supported_rescue_flashes[] = {"s25fs064s","sst26wf080b"};
+static int recovery_mode_enabled = 0;
+
 DECLARE_GLOBAL_DATA_PTR;
 
 static inline void reset_eth_phys(void)
@@ -50,18 +54,24 @@ static inline void reset_eth_phys(void)
 
 int checkboard(void)
 {
-#ifdef CONFIG_TARGET_TRUSTBOX
-
 	struct ccsr_gpio *pgpio = (void *)(CONFIG_SYS_GPIO2);
+	const void* bcd_dtc_blob;
+	int ret;
 
 	int m2_config = 0;
 	int serdes_cfg = get_serdes_protocol();
 
 	puts("Board: Trustbox\n");
 
-	/* set QSPI chip select muxing to 0 */
-	setbits_be32(&pgpio->gpdir, QSPI_MUX_N_MASK);
-	clrbits_be32(&pgpio->gpdat, QSPI_MUX_N_MASK);
+	env_set_ulong("recoverymode", recovery_mode_enabled);
+	bcd_dtc_blob = get_boardinfo_rescue_flash();
+	if (bcd_dtc_blob != NULL) {
+		/* Board Configuration Data is intact, ready for parsing */
+		ret = add_mac_addressess_to_env(bcd_dtc_blob);
+		if (ret != 0) {
+			printf("Error adding BCD data to environment\n");
+		}
+	}
 
 	/* Configure USB hub */
 	usb_hx3_hub_init();
@@ -89,9 +99,6 @@ int checkboard(void)
 		break;
 	}
 
-#else
-	puts("Board: unknown");
-#endif
 	return 0;
 }
 
@@ -127,7 +134,6 @@ int dram_init(void)
 int board_early_init_f(void)
 {
 	fsl_lsch2_early_init_f();
-
 	return 0;
 }
 
@@ -135,6 +141,7 @@ int board_init(void)
 {
 	struct ccsr_cci400 *cci = (struct ccsr_cci400 *)(CONFIG_SYS_IMMR +
 					CONFIG_SYS_CCI400_OFFSET);
+	struct ccsr_gpio *pgpio = (void *)(CONFIG_SYS_GPIO2);
 	/*
 	 * Set CCI-400 control override register to enable barrier
 	 * transaction
@@ -151,6 +158,24 @@ int board_init(void)
 #ifdef CONFIG_ENV_IS_NOWHERE
 	gd->env_addr = (ulong)&default_environment[0];
 #endif
+
+	/* Detect and handle grapeboard rescue mode */
+	char *current_flash_name = strdup(get_qspi_flash_name());
+	for (int index = 0; index < sizeof(supported_rescue_flashes) / sizeof(supported_rescue_flashes[0]); index++) {
+		if(strcmp(current_flash_name, supported_rescue_flashes[index]) == 0) {
+			/* Revert chip select muxing to standard QSPI flash */
+			setbits_be32(&pgpio->gpdir, QSPI_MUX_N_MASK);
+			clrbits_be32(&pgpio->gpdat, QSPI_MUX_N_MASK);
+			printf("Please release the rescue mode button (S2) to enter the recovery mode\n");
+			recovery_mode_enabled = 1;
+
+			while(strcmp(get_qspi_flash_name(), supported_rescue_flashes[index]) == 0) {
+				udelay(500000);
+				puts("\033[1A"); /* Overwrite previous line */
+			}
+		}
+	}
+	free(current_flash_name);
 
 #ifdef CONFIG_FSL_CAAM
 	sec_init();
