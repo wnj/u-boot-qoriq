@@ -165,7 +165,7 @@
         "fi\0" \
 	"update_tftp_pfe_qspi_nor=" \
         "dhcp;" \
-        "tftp $load_addr $update_files_path/pfe.itb;" \
+        "tftp $load_addr $update_files_path/pfe_fw_sbl.itb;" \
         "if test $? = \"0\"; then " \
 		"sf probe 0:0;" \
 		"sf erase pfe 40000;" \
@@ -221,7 +221,7 @@
         "fi\0" \
 	"update_usb_pfe_qspi_nor=" \
         "usb start;" \
-        "fatload usb 0:1 $load_addr $update_files_path/pfe.itb;" \
+        "fatload usb 0:1 $load_addr $update_files_path/pfe_fw_sbl.itb;" \
         "if test $? = \"0\"; then " \
 		"sf probe 0:0;" \
 		"sf erase pfe 40000;" \
@@ -277,7 +277,7 @@
         "fi\0" \
 	"update_mmc_pfe_qspi_nor=" \
         "mmc rescan;" \
-        "ext4load mmc 0:1 $load_addr $update_files_path/pfe.itb;" \
+        "ext4load mmc 0:1 $load_addr $update_files_path/pfe_fw_sbl.itb;" \
         "if test $? = \"0\"; then " \
 		"sf probe 0:0;" \
 		"sf erase pfe 40000;" \
