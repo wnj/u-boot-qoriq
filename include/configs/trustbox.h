@@ -123,21 +123,13 @@
 
 /* Default environment variables */
 #define COMMON_UBOOT_CONFIG \
-	"update_tftp_rcw_qspi_nor=" \
-        "dhcp;" \
-        "tftp $load_addr $update_files_path/rcw.bin;" \
-        "if test $? = \"0\"; then " \
-		"sf probe 0:0;" \
-		"sf erase 0 10000;" \
-		"sf write $load_addr 0 $filesize;" \
-        "fi\0" \
 	"update_tftp_uboot_qspi_nor=" \
         "dhcp;" \
-        "tftp $load_addr $update_files_path/u-boot.bin;" \
+        "tftp $load_addr $update_files_path/u-boot-with-pbl.bin;" \
         "if test $? = \"0\"; then " \
 		"sf probe 0:0;" \
-		"sf erase 10000 1F0000;" \
-		"sf write $load_addr 10000 $filesize;" \
+		"sf erase 0 200000;" \
+		"sf write $load_addr 0 $filesize;" \
         "fi\0" \
 	"update_tftp_uboot_hdr_qspi_nor=" \
         "dhcp;" \
@@ -179,21 +171,13 @@
 		"sf erase 0 0x04000000;" \
 		"sf write $load_addr 0 $filesize;" \
         "fi\0" \
-	"update_usb_rcw_qspi_nor=" \
-        "usb start;" \
-        "fatload usb 0:1 $load_addr $update_files_path/rcw.bin;" \
-        "if test $? = \"0\"; then " \
-		"sf probe 0:0;" \
-		"sf erase 0 10000;" \
-		"sf write $load_addr 0 $filesize;" \
-        "fi\0" \
 	"update_usb_uboot_qspi_nor=" \
         "usb start;" \
-        "fatload usb 0:1 $load_addr $update_files_path/u-boot.bin;" \
+        "fatload usb 0:1 $load_addr $update_files_path/u-boot-with-pbl.bin;" \
         "if test $? = \"0\"; then " \
 		"sf probe 0:0;" \
-		"sf erase 10000 1F0000;" \
-		"sf write $load_addr 10000 $filesize;" \
+		"sf erase 0 200000;" \
+		"sf write $load_addr 0 $filesize;" \
         "fi\0" \
 	"update_usb_uboot_hdr_qspi_nor=" \
         "usb start;" \
@@ -235,21 +219,13 @@
 		"sf erase 0 0x04000000;" \
 		"sf write $load_addr 0 $filesize;" \
         "fi\0" \
-	"update_mmc_rcw_qspi_nor=" \
-        "mmc rescan;" \
-        "ext4load mmc 0:1 $load_addr $update_files_path/rcw.bin;" \
-        "if test $? = \"0\"; then " \
-		"sf probe 0:0;" \
-		"sf erase 0 10000;" \
-		"sf write $load_addr 0 $filesize;" \
-        "fi\0" \
 	"update_mmc_uboot_qspi_nor=" \
         "mmc rescan;" \
-        "ext4load mmc 0:1 $load_addr $update_files_path/u-boot.bin;" \
+        "ext4load mmc 0:1 $load_addr $update_files_path/u-boot-with-pbl.bin;" \
         "if test $? = \"0\"; then " \
 		"sf probe 0:0;" \
-		"sf erase 10000 1F0000;" \
-		"sf write $load_addr 10000 $filesize;" \
+		"sf erase 0 200000;" \
+		"sf write $load_addr 0 $filesize;" \
         "fi\0" \
 	"update_mmc_uboot_hdr_qspi_nor=" \
         "mmc rescan;" \
