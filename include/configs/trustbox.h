@@ -100,10 +100,10 @@
 #define CONFIG_SYS_MEMTEST_END		0x9fffffff
 
 #define MTDIDS_DEFAULT \
-	"nor0=1550000.quadspi"
+	"nor0=1550000.spi"
 
 #define MTDPARTS_DEFAULT    \
-	"mtdparts=1550000.quadspi:" \
+	"mtdparts=1550000.spi:" \
 		"2M@0x0(u-boot)," \
 		"256k(env)," \
 		"256k(pfe)," \
