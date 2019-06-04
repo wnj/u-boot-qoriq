@@ -5,11 +5,11 @@
 
 #ifdef CONFIG_SPL
 #ifdef CONFIG_PBL_RCW_SECUREBOOT
-#define CONFIG_SYS_FSL_PBL_RCW "board/scalys/grapeboard/rcw_secureboot.cfg"
+#define CONFIG_SYS_FSL_PBL_RCW "board/scalys/trustbox/rcw_secureboot.cfg"
 #else
-#define CONFIG_SYS_FSL_PBL_RCW "board/scalys/grapeboard/rcw.cfg"
+#define CONFIG_SYS_FSL_PBL_RCW "board/scalys/trustbox/rcw.cfg"
 #endif /* CONFIG_PBL_RCW_SECUREBOOT */
-#define CONFIG_SYS_FSL_PBL_PBI "board/scalys/grapeboard/pbi.cfg"
+#define CONFIG_SYS_FSL_PBL_PBI "board/scalys/trustbox/pbi.cfg"
 
 /* Execute from OCRAM */
 #define CONFIG_SYS_TEXT_BASE 0x82000000

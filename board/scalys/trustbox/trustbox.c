@@ -161,7 +161,7 @@ int board_init(void)
 	gd->env_addr = (ulong)&default_environment[0];
 #endif
 
-	/* Detect and handle grapeboard rescue mode */
+	/* Detect and handle trustbox rescue mode */
 	char *current_flash_name = strdup(get_qspi_flash_name());
 	for (int index = 0; index < sizeof(supported_rescue_flashes) / sizeof(supported_rescue_flashes[0]); index++) {
 		if(strcmp(current_flash_name, supported_rescue_flashes[index]) == 0) {
