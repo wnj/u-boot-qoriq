@@ -3,6 +3,30 @@
 
 #include "ls1012a_common.h"
 
+#ifdef CONFIG_SPL
+#define CONFIG_SPL_FRAMEWORK
+#ifdef CONFIG_PBL_RCW_SECUREBOOT
+#define CONFIG_SYS_FSL_PBL_RCW "board/scalys/grapeboard/rcw_secureboot.cfg"
+#else
+#define CONFIG_SYS_FSL_PBL_RCW "board/scalys/grapeboard/rcw.cfg"
+#endif /* CONFIG_PBL_RCW_SECUREBOOT */
+#define CONFIG_SYS_FSL_PBL_PBI "board/scalys/grapeboard/pbi.cfg"
+
+/* Execute from OCRAM */
+#define CONFIG_SYS_TEXT_BASE 0x82000000
+#define CONFIG_SPL_TEXT_BASE CONFIG_SYS_FSL_OCRAM_BASE
+#define CONFIG_SPL_MAX_SIZE 0x00018000
+#define CONFIG_SPL_STACK \
+	(CONFIG_SYS_FSL_OCRAM_BASE + CONFIG_SYS_FSL_OCRAM_SIZE)
+
+#define CONFIG_RAMBOOT_PBL 1
+#define CONFIG_SPL_FSL_PBL 1
+#define CONFIG_SPL_PAD_TO 0x00040000
+#define CONFIG_SPL_LOAD_FIT_ADDRESS (0x40000000 + CONFIG_SPL_PAD_TO)
+#else /* SPL */
+#define CONFIG_SYS_TEXT_BASE 				0x40001000 /* QSPI0_AMBA_BASE + CONFIG_UBOOT_TEXT_OFFSET */
+#endif /* SPL */
+
 /* DDR */
 #define CONFIG_DIMM_SLOTS_PER_CTLR	1
 #define CONFIG_CHIP_SELECTS_PER_CTRL	1
@@ -25,6 +49,8 @@
 /* Size of malloc() pool */
 #undef CONFIG_SYS_MALLOC_LEN
 #define CONFIG_SYS_MALLOC_LEN		(0x60000 + 128 * 1024 + 0x100000)
+#define CONFIG_SYS_SPL_MALLOC_START	0x80200000
+#define CONFIG_SYS_SPL_MALLOC_SIZE	0x100000
 
 #define CONFIG_SPI_FLASH_STMICRO
 #define CONFIG_SPI_FLASH_BAR
@@ -277,6 +303,7 @@
 		"bootm $kernel_addr_r - $fdt_addr_r;" \
 	"fi\0" \
 
+#ifndef CONFIG_SPL_BUILD
 #undef CONFIG_EXTRA_ENV_SETTINGS
 #define CONFIG_EXTRA_ENV_SETTINGS		\
 	"verify=no\0"				\
@@ -323,6 +350,8 @@
 							 "setenv bootargs $bootargs $default_bootargs;" \
 							 "bootm $kernel_addr_r - $fdt_addr_r;" \
 			  "fi\0" \
+
+#endif
 
 #undef CONFIG_BOOTCOMMAND
 #define CONFIG_BOOTCOMMAND	"run distro_bootcmd; run default_boot"

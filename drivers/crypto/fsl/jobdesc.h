@@ -13,6 +13,12 @@
 
 #define KEY_IDNFR_SZ_BYTES		16
 
+enum BLOB_FORMAT {
+	BLOB_FORMAT_NORMAL = 0,
+	BLOB_FORMAT_MASTER_KEY_VERIFICATION = 0x2,
+	BLOB_FORMAT_TEST = 0x3,
+};
+
 #ifdef CONFIG_CMD_DEKBLOB
 /* inline_cnstr_jobdesc_blob_dek:
  * Intializes and constructs the job descriptor for DEK encapsulation
@@ -44,4 +50,9 @@ void inline_cnstr_jobdesc_rng_instantiation(uint32_t *desc, int handle);
 void inline_cnstr_jobdesc_pkha_rsaexp(uint32_t *desc,
 				      struct pk_in_params *pkin, uint8_t *out,
 				      uint32_t out_siz);
+
+void inline_cnstr_jobdesc_blob_encap_format(uint32_t *desc, uint8_t *key_idnfr,
+				     uint8_t *plain_txt, uint8_t *enc_blob,
+				     uint32_t in_sz,
+				     enum BLOB_FORMAT blob_format);
 #endif

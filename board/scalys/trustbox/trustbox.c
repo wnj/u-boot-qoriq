@@ -11,9 +11,8 @@
 #include <asm/io.h>
 #include <asm/arch/clock.h>
 #include <asm/arch/fsl_serdes.h>
-#ifdef CONFIG_FSL_LS_PPA
+#include <fdt_support.h>
 #include <asm/arch/ppa.h>
-#endif
 #include <asm/arch/mmu.h>
 #include <asm/arch/soc.h>
 #include <hwconfig.h>
@@ -25,6 +24,7 @@
 #include <fsl_mmdc.h>
 #include <netdev.h>
 #include <fsl_sec.h>
+#include <spl.h>
 
 
 #include "gpio.h"
@@ -120,7 +120,9 @@ int dram_init(void)
 		0xa1390003,	/* mpzqhwctrl */
 	};
 
+#if !defined(CONFIG_SPL) || defined(CONFIG_SPL_BUILD)
 	mmdc_init(&mparam);
+#endif
 
 	gd->ram_size = CONFIG_SYS_SDRAM_SIZE;
 #if !defined(CONFIG_SPL) || defined(CONFIG_SPL_BUILD)
@@ -207,3 +209,12 @@ int ft_board_setup(void *blob, bd_t *bd)
 
 	return 0;
 }
+
+#ifdef CONFIG_SPL_BUILD
+void board_boot_order(u32 *spl_boot_list)
+{
+#if CONFIG_IS_ENABLED(RAM_SUPPORT)
+	spl_boot_list[0] = BOOT_DEVICE_RAM;
+#endif
+}
+#endif
