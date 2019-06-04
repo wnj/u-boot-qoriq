@@ -4,7 +4,6 @@
 #include "ls1012a_common.h"
 
 #ifdef CONFIG_SPL
-#define CONFIG_SPL_FRAMEWORK
 #ifdef CONFIG_PBL_RCW_SECUREBOOT
 #define CONFIG_SYS_FSL_PBL_RCW "board/scalys/grapeboard/rcw_secureboot.cfg"
 #else

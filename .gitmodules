@@ -1,0 +1,4 @@
+[submodule "RIoT"]
+	path = external/RIoT
+	url = https://github.com/Microsoft/RIoT
+	branch = tcps-feature

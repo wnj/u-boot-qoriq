@@ -36,9 +36,6 @@ obj-y += ldiv.o
 obj-$(CONFIG_LZ4) += lz4_wrapper.o
 obj-$(CONFIG_MD5) += md5.o
 obj-y += net_utils.o
-obj-$(CONFIG_CYRES) += cyres_cert_chain.o
-obj-$(CONFIG_CYRES) += cyres/
-obj-$(CONFIG_CYRES) += tinycbor/
 obj-$(CONFIG_PHYSMEM) += physmem.o
 obj-y += qsort.o
 obj-y += rc4.o
@@ -71,6 +68,9 @@ endif
 ifdef CONFIG_SPL_BUILD
 obj-$(CONFIG_SPL_YMODEM_SUPPORT) += crc16.o
 obj-$(CONFIG_SPL_NET_SUPPORT) += net_utils.o
+obj-$(CONFIG_CYRES) += cyres_cert_chain.o
+obj-$(CONFIG_CYRES) += cyres/
+obj-$(CONFIG_CYRES) += tinycbor/
 endif
 obj-$(CONFIG_ADDR_MAP) += addr_map.o
 obj-y += hashtable.o
