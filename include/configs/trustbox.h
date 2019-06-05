@@ -121,8 +121,6 @@
 #define CONFIG_PCI_SCAN_SHOW
 
 #define CONFIG_CMD_MEMINFO
-#define CONFIG_SYS_MEMTEST_START	0x80000000
-#define CONFIG_SYS_MEMTEST_END		0x9fffffff
 
 #define MTDIDS_DEFAULT \
 	"nor0=1550000.spi"
@@ -144,6 +142,7 @@
 	func(USB, usb, 0) \
 /*	func(SCSI, scsi, 0) \	*/
 /*	func(DHCP, dhcp, na)	*/
+#include <config_distro_bootcmd.h>
 #endif
 
 /* Default environment variables */
@@ -302,8 +301,8 @@
 		"bootm $kernel_addr_r - $fdt_addr_r;" \
 	"fi\0" \
 
-
 #undef CONFIG_EXTRA_ENV_SETTINGS
+#ifndef CONFIG_SPL_BUILD
 #define CONFIG_EXTRA_ENV_SETTINGS		\
 	"verify=no\0"				\
 	"fdt_high=0xffffffffffffffff\0"		\
@@ -327,6 +326,7 @@
 	"update_files_path=.\0" \
 	"autoload=no\0" \
 	COMMON_UBOOT_CONFIG \
+	BOOTENV \
 	"boot_scripts=trustbox_boot.scr trustbox_recovery.scr\0"	\
 	"default_bootargs=root=/dev/mmcblk0p1 rootfstype=ext4 rw rootwait $mtdparts\0" \
 	"default_boot=" \
@@ -349,7 +349,7 @@
 							 "bootm $kernel_addr_r - $fdt_addr_r;" \
 			  "fi\0" \
 
-
+#endif
 
 #undef CONFIG_BOOTCOMMAND
 #define CONFIG_BOOTCOMMAND	"run distro_bootcmd; run default_boot"
