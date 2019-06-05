@@ -302,7 +302,7 @@
 		"bootm $kernel_addr_r - $fdt_addr_r;" \
 	"fi\0" \
 
-#ifndef CONFIG_SPL_BUILD
+
 #undef CONFIG_EXTRA_ENV_SETTINGS
 #define CONFIG_EXTRA_ENV_SETTINGS		\
 	"verify=no\0"				\
@@ -327,7 +327,6 @@
 	"update_files_path=.\0" \
 	"autoload=no\0" \
 	COMMON_UBOOT_CONFIG \
-	BOOTENV					\
 	"boot_scripts=trustbox_boot.scr trustbox_recovery.scr\0"	\
 	"default_bootargs=root=/dev/mmcblk0p1 rootfstype=ext4 rw rootwait $mtdparts\0" \
 	"default_boot=" \
@@ -350,7 +349,7 @@
 							 "bootm $kernel_addr_r - $fdt_addr_r;" \
 			  "fi\0" \
 
-#endif
+
 
 #undef CONFIG_BOOTCOMMAND
 #define CONFIG_BOOTCOMMAND	"run distro_bootcmd; run default_boot"
