@@ -107,6 +107,12 @@
 #define CONFIG_SPI_FLASH_SST
 #endif /* CONFIG_QSPI_BOOT */
 
+#undef CONFIG_ENV_OFFSET
+#define CONFIG_ENV_OFFSET 0x200000
+
+#undef CONFIG_ENV_SIZE
+#define CONFIG_ENV_SIZE 0x40000
+
 /* UBI filesystem support */
 #define CONFIG_CMD_UBI
 #define CONFIG_CMD_UBIFS
