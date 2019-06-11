@@ -334,7 +334,6 @@
 	COMMON_UBOOT_CONFIG \
 	BOOTENV \
 	"boot_scripts=trustbox_boot.scr trustbox_recovery.scr\0"	\
-	"default_bootargs=root=/dev/mmcblk0p1 rootfstype=ext4 rw rootwait $mtdparts\0" \
 	"default_boot=" \
 			  "setenv load_succes 1;"\
 			  "ext4load mmc 0:1 $fdt_addr_r /boot/trustbox.dtb;" \
@@ -350,8 +349,8 @@
 			  "env exists secureboot && ext4load mmc 0:1 $kernelheader_addr_r /boot/hdr_kernel.out; " \
 			  "env exists secureboot && esbc_validate $kernelheader_addr_r || esbc_halt;" \
 			  "if test $load_succes = \"0\"; then " \
-							 "pfe stop;" \
-							 "setenv bootargs $bootargs $default_bootargs;" \
+							 "pfe stop; mtdparts;" \
+							 "setenv bootargs $bootargs $mtdparts;" \
 							 "bootm $kernel_addr_r - $fdt_addr_r;" \
 			  "fi\0" \
 
