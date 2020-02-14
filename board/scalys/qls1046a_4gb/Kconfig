@@ -1,0 +1,21 @@
+if TARGET_QLS1046A_4GB
+
+config SYS_BOARD
+	default "qls1046a_4gb"
+
+config SYS_VENDOR
+	default "scalys"
+
+config SYS_SOC
+	default "fsl-layerscape"
+
+config SYS_CONFIG_NAME
+	default "qls1046a_4gb"
+	
+config NOR
+	bool "Support for NOR flash"
+	default y
+	
+source "board/freescale/common/Kconfig"
+
+endif

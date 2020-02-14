@@ -1,0 +1,49 @@
+// SPDX-License-Identifier: GPL-2.0+ OR X11
+/*
+ * Copyright 2020 Scalys
+ *
+ */
+
+/dts-v1/;
+/include/ "fsl-ls1046a.dtsi"
+
+/ {
+	model = "QLS1046A 4GB dev board";
+
+	aliases {
+		spi1 = &dspi0;
+	};
+};
+
+&dspi0 {
+	status = "okay";
+};
+
+&usb2 {
+	status = "disabled";
+};
+
+&ifc {
+	#address-cells = <2>;
+	#size-cells = <1>;
+	ranges = <0x0 0x0 0x0 0x7e800000 0x00010000
+		  0x1 0x0 0x0 0x60000000 0x02000000>;
+	status = "okay";
+	
+	nand@0,0 {
+		compatible = "fsl,ifc-nand";
+		#address-cells = <1>;
+		#size-cells = <1>;
+		reg = <0x0 0x0 0x10000>;
+	};
+
+	nor@1,0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "cfi-flash";
+		reg = <0x1 0x0 0x2000000>;
+		bank-width = <1>;
+		device-width = <1>;
+	};
+
+};

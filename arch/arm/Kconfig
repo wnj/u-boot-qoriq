@@ -1365,6 +1365,23 @@ config TARGET_LS1046AFRWY
 	  The LS1046A Freeway Board (FRWY) is a high-performance
 	  development platform that supports the QorIQ LS1046A
 	  Layerscape Architecture processor.
+
+config TARGET_QLS1046A_4GB
+	bool "Support Te2v QV3 on Scalys daughter board"
+	select ARCH_LS1046A
+	select ARM64
+	select ARMV8_MULTIENTRY
+	select BOARD_EARLY_INIT_F
+	select BOARD_LATE_INIT
+	select DM_SPI_FLASH if DM_SPI
+	select SUPPORT_SPL
+        select SYS_DDR_RAW_TIMING
+	select FSL_DDR_BIST
+	select FSL_DDR_INTERACTIVE if !SPL
+	imply SCSI
+	help
+	  Support Te2v QV3 on Scalys daughter board.
+
 config TARGET_H2200
 	bool "Support h2200"
 	select CPU_PXA
@@ -1664,6 +1681,7 @@ source "board/xilinx/Kconfig"
 source "board/xilinx/zynq/Kconfig"
 source "board/xilinx/zynqmp/Kconfig"
 source "board/zipitz2/Kconfig"
+source "board/scalys/qls1046a_4gb/Kconfig"
 
 source "arch/arm/Kconfig.debug"
 
