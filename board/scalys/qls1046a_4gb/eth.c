@@ -103,14 +103,18 @@ int board_eth_init(bd_t *bis)
 	fm_info_set_phy_address(FM1_DTSEC3, RGMII_PHY1_ADDR);
 	fm_info_set_phy_address(FM1_DTSEC4, RGMII_PHY2_ADDR);
     
-	/* Disable SGMII related ports for now */
+	/* Disable SGMII related ports for now. 
+	   These ports can be implemented if needed. */
 	fm_disable_port(FM1_DTSEC5);
 	fm_disable_port(FM1_DTSEC6);
 	
-	/* 
-	 * Disable XFI related ports 
-	 * In current hardware they aren't usable since the mdio is nc 
-	 */
+	/* In case SERDES1[PRTCL] = 0x3333 then disable the following 
+	   SGMII ports. These ports are not usable on default carrier board */
+	fm_disable_port(FM1_DTSEC9);
+	fm_disable_port(FM1_DTSEC10);
+	
+	/* In case SERDES1[PRTCL] = 0x1133 then disable XFI ports
+	   In current hardware they aren't usable since the mdio is NC */
 	fm_disable_port(FM1_10GEC1);
 	fm_disable_port(FM1_10GEC2);
 
