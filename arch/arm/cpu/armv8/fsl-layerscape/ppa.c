@@ -236,7 +236,7 @@ int ppa_init(void)
 		 * non-fatal failures.
 		 */
 		ret = fsl_secboot_validate(ppa_esbc_hdr,
-					   PPA_KEY_HASH,
+					   NULL,
 					   &ppa_img_addr);
 		if (ret != 0)
 			printf("SEC firmware(s) validation failed\n");

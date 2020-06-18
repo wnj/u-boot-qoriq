@@ -28,7 +28,7 @@ config PBL_RCW_SECUREBOOT
 if CHAIN_OF_TRUST
 config SYS_LS_PPA_ESBC_ADDR
 	hex "PPA Firmware HDR Addr"
-	default 0x40680000
+	default 0x403c0000
 endif
 
 menu "PFE configuration options"
@@ -59,5 +59,7 @@ config PFE_EMAC2_PHY_ADDR
 	default 0x1
 
 endmenu
+
+source "board/freescale/common/Kconfig"
 
 endif

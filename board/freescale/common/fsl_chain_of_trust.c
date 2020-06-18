@@ -146,8 +146,12 @@ void __noreturn jump_to_image_no_args(struct spl_image_info *spl_image)
 	image_entry_noargs_t image_entry =
 		(image_entry_noargs_t)(unsigned long)spl_image->entry_point;
 
+#ifdef CONFIG_U_BOOT_HDR_ADDR
+	hdr_addr = CONFIG_U_BOOT_HDR_ADDR;
+#else
 	hdr_addr = (spl_image->entry_point + spl_image->size -
 			CONFIG_U_BOOT_HDR_SIZE);
+#endif
 	spl_validate_uboot(hdr_addr, (uintptr_t)spl_image->entry_point);
 	/*
 	 * In case of failure in validation, spl_validate_uboot would

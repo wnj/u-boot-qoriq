@@ -33,7 +33,7 @@ u32 spl_boot_device(void)
 
 void spl_board_init(void)
 {
-#if defined(CONFIG_SECURE_BOOT) && defined(CONFIG_FSL_LSCH2)
+#if defined(CONFIG_SECURE_BOOT) && defined(CONFIG_FSL_LSCH2) && defined(SMMU_BASE)
 	/*
 	 * In case of Secure Boot, the IBR configures the SMMU
 	 * to allow only Secure transactions.
@@ -50,6 +50,7 @@ void spl_board_init(void)
 	enable_layerscape_ns_access();
 #endif
 #ifdef CONFIG_SPL_FSL_LS_PPA
+	sec_init();
 	ppa_init();
 #endif
 }
