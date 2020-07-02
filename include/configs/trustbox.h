@@ -142,9 +142,12 @@
 		"256k(env)," \
 		"256k(pfe)," \
 		"1M(ppa)," \
+		"256k(spl_hdr)," \
 		"256k(u-boot_hdr)," \
+		"256k(pfe_hdr)," \
 		"256k(ppa_hdr)," \
-		"-(UBI)"
+		"256k(itb_hdr)," \
+		"-(itb)"
 
 #ifndef CONFIG_SPL_BUILD
 #undef BOOT_TARGET_DEVICES
@@ -163,32 +166,8 @@
         "tftp $load_addr $update_files_path/u-boot-with-pbl.bin;" \
         "if test $? = \"0\"; then " \
 		"sf probe 0:0;" \
-		"sf erase 0 200000;" \
-		"sf write $load_addr 0 $filesize;" \
-        "fi\0" \
-	"update_tftp_uboot_hdr_qspi_nor=" \
-        "dhcp;" \
-        "tftp $load_addr $update_files_path/hdr_uboot.out;" \
-        "if test $? = \"0\"; then " \
-               "sf probe 0:0;" \
-               "sf erase u-boot_hdr 40000;" \
-               "sf write $load_addr u-boot_hdr $filesize;" \
-        "fi\0" \
-	"update_tftp_ppa_qspi_nor=" \
-        "dhcp;" \
-        "tftp $load_addr $update_files_path/ppa.itb;" \
-        "if test $? = \"0\"; then " \
-		"sf probe 0:0;" \
-		"sf erase ppa 100000;" \
-		"sf write $load_addr ppa $filesize;" \
-        "fi\0" \
-	"update_tftp_ppa_hdr_qspi_nor=" \
-        "dhcp;" \
-        "tftp $load_addr $update_files_path/hdr_ppa.out;" \
-        "if test $? = \"0\"; then " \
-		"sf probe 0:0;" \
-		"sf erase ppa_hdr 40000;" \
-		"sf write $load_addr ppa_hdr $filesize;" \
+		"sf erase u-boot 200000;" \
+		"sf write $load_addr u-boot $filesize;" \
         "fi\0" \
 	"update_tftp_pfe_qspi_nor=" \
         "dhcp;" \
@@ -198,12 +177,68 @@
 		"sf erase pfe 40000;" \
 		"sf write $load_addr pfe $filesize;" \
         "fi\0" \
-	"update_tftp_image_qspi_nor=" \
+	"update_tftp_ppa_qspi_nor=" \
         "dhcp;" \
-        "tftp $load_addr $update_files_path/trustbox_qspi_fw.itb;" \
+        "tftp $load_addr $update_files_path/ppa.itb;" \
         "if test $? = \"0\"; then " \
 		"sf probe 0:0;" \
-		"sf erase 0 0x04000000;" \
+		"sf erase ppa 100000;" \
+		"sf write $load_addr ppa $filesize;" \
+        "fi\0" \
+	"update_tftp_spl_hdr_qspi_nor=" \
+        "dhcp;" \
+        "tftp $load_addr $update_files_path/spl_hdr.out;" \
+        "if test $? = \"0\"; then " \
+               "sf probe 0:0;" \
+               "sf erase spl_hdr 40000;" \
+               "sf write $load_addr spl_hdr $filesize;" \
+        "fi\0" \
+	"update_tftp_uboot_hdr_qspi_nor=" \
+        "dhcp;" \
+        "tftp $load_addr $update_files_path/uboot_hdr.out;" \
+        "if test $? = \"0\"; then " \
+               "sf probe 0:0;" \
+               "sf erase u-boot_hdr 40000;" \
+               "sf write $load_addr u-boot_hdr $filesize;" \
+        "fi\0" \
+	"update_tftp_pfe_hdr_qspi_nor=" \
+        "dhcp;" \
+        "tftp $load_addr $update_files_path/pfe_fw_sbl_hdr.out;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase pfe_hdr 40000;" \
+		"sf write $load_addr pfe_hdr $filesize;" \
+        "fi\0" \
+	"update_tftp_ppa_hdr_qspi_nor=" \
+        "dhcp;" \
+        "tftp $load_addr $update_files_path/ppa_hdr.out;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase ppa_hdr 40000;" \
+		"sf write $load_addr ppa_hdr $filesize;" \
+        "fi\0" \
+	"update_tftp_itb_hdr_qspi_nor=" \
+        "dhcp;" \
+        "tftp $load_addr $update_files_path/trustbox_hdr.out;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase itb_hdr 40000;" \
+		"sf write $load_addr itb_hdr $filesize;" \
+        "fi\0" \
+	"update_tftp_itb_qspi_nor=" \
+        "dhcp;" \
+        "tftp $load_addr $update_files_path/trustbox.itb;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase itb 3b40000;" \
+		"sf write $load_addr itb $filesize;" \
+        "fi\0" \
+	"update_tftp_image_qspi_nor=" \
+        "dhcp;" \
+        "tftp $load_addr $update_files_path/trustbox_qspi_fw.img;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase  4000000;" \
 		"sf write $load_addr 0 $filesize;" \
         "fi\0" \
 	"update_usb_uboot_qspi_nor=" \
@@ -211,32 +246,8 @@
         "fatload usb 0:1 $load_addr $update_files_path/u-boot-with-pbl.bin;" \
         "if test $? = \"0\"; then " \
 		"sf probe 0:0;" \
-		"sf erase 0 200000;" \
-		"sf write $load_addr 0 $filesize;" \
-        "fi\0" \
-	"update_usb_uboot_hdr_qspi_nor=" \
-        "usb start;" \
-        "fatload usb 0:1 $load_addr $update_files_path/hdr_uboot.out;" \
-        "if test $? = \"0\"; then " \
-		"sf probe 0:0;" \
-		"sf erase u-boot_hdr 40000;" \
-		"sf write $load_addr u-boot_hdr $filesize;" \
-        "fi\0" \
-	"update_usb_ppa_qspi_nor=" \
-        "usb start;" \
-        "fatload usb 0:1 $load_addr $update_files_path/ppa.itb;" \
-        "if test $? = \"0\"; then " \
-		"sf probe 0:0;" \
-		"sf erase ppa 100000;" \
-		"sf write $load_addr ppa $filesize;" \
-        "fi\0" \
-	"update_usb_ppa_hdr_qspi_nor=" \
-        "usb start;" \
-        "fatload usb 0:1 $load_addr $update_files_path/hdr_ppa.out;" \
-        "if test $? = \"0\"; then " \
-		"sf probe 0:0;" \
-		"sf erase ppa_hdr 40000;" \
-		"sf write $load_addr ppa_hdr $filesize;" \
+		"sf erase u-boot 200000;" \
+		"sf write $load_addr u-boot $filesize;" \
         "fi\0" \
 	"update_usb_pfe_qspi_nor=" \
         "usb start;" \
@@ -246,12 +257,68 @@
 		"sf erase pfe 40000;" \
 		"sf write $load_addr pfe $filesize;" \
         "fi\0" \
-	"update_usb_image_qspi_nor=" \
+	"update_usb_ppa_qspi_nor=" \
         "usb start;" \
-        "fatload usb 0:1 $load_addr $update_files_path/trustbox_qspi_fw.itb;" \
+        "fatload usb 0:1 $load_addr $update_files_path/ppa.itb;" \
         "if test $? = \"0\"; then " \
 		"sf probe 0:0;" \
-		"sf erase 0 0x04000000;" \
+		"sf erase ppa 100000;" \
+		"sf write $load_addr ppa $filesize;" \
+        "fi\0" \
+	"update_usb_spl_hdr_qspi_nor=" \
+        "usb start;" \
+        "fatload usb 0:1 $load_addr $update_files_path/spl_hdr.out;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase spl_hdr 40000;" \
+		"sf write $load_addr spl_hdr $filesize;" \
+        "fi\0" \
+	"update_usb_uboot_hdr_qspi_nor=" \
+        "usb start;" \
+        "fatload usb 0:1 $load_addr $update_files_path/uboot_hdr.out;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase u-boot_hdr 40000;" \
+		"sf write $load_addr u-boot_hdr $filesize;" \
+        "fi\0" \
+	"update_usb_pfe_hdr_qspi_nor=" \
+        "usb start;" \
+        "fatload usb 0:1 $load_addr $update_files_path/pfe_fw_sbl_hdr.out;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase pfe_hdr 40000;" \
+		"sf write $load_addr pfe_hdr $filesize;" \
+        "fi\0" \
+	"update_usb_ppa_hdr_qspi_nor=" \
+        "usb start;" \
+        "fatload usb 0:1 $load_addr $update_files_path/ppa_hdr.out;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase ppa_hdr 40000;" \
+		"sf write $load_addr ppa_hdr $filesize;" \
+        "fi\0" \
+	"update_usb_itb_hdr_qspi_nor=" \
+        "usb start;" \
+        "fatload usb 0:1 $load_addr $update_files_path/trustbox_hdr.out;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase itb_hdr 40000;" \
+		"sf write $load_addr itb_hdr $filesize;" \
+        "fi\0" \
+	"update_usb_itb_qspi_nor=" \
+        "usb start;" \
+        "fatload usb 0:1 $load_addr $update_files_path/trustbox.itb;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase itb 3b40000;" \
+		"sf write $load_addr itb $filesize;" \
+        "fi\0" \
+	"update_usb_image_qspi_nor=" \
+        "usb start;" \
+        "fatload usb 0:1 $load_addr $update_files_path/trustbox_qspi_fw.img;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase 0 4000000;" \
 		"sf write $load_addr 0 $filesize;" \
         "fi\0" \
 	"update_mmc_uboot_qspi_nor=" \
@@ -259,32 +326,8 @@
         "ext4load mmc 0:1 $load_addr $update_files_path/u-boot-with-pbl.bin;" \
         "if test $? = \"0\"; then " \
 		"sf probe 0:0;" \
-		"sf erase 0 200000;" \
-		"sf write $load_addr 0 $filesize;" \
-        "fi\0" \
-	"update_mmc_uboot_hdr_qspi_nor=" \
-        "mmc rescan;" \
-        "ext4load mmc 0:1 $load_addr $update_files_path/hdr_uboot.out;" \
-        "if test $? = \"0\"; then " \
-		"sf probe 0:0;" \
-		"sf erase u-boot_hdr 40000;" \
-		"sf write $load_addr u-boot_hdr $filesize;" \
-        "fi\0" \
-	"update_mmc_ppa_qspi_nor=" \
-        "mmc rescan;" \
-        "ext4load mmc 0:1 $load_addr $update_files_path/ppa.itb;" \
-        "if test $? = \"0\"; then " \
-		"sf probe 0:0;" \
-		"sf erase ppa 100000;" \
-		"sf write $load_addr ppa $filesize;" \
-        "fi\0" \
-	"update_mmc_ppa_hdr_qspi_nor=" \
-        "mmc rescan;" \
-        "ext4load mmc 0:1 $load_addr $update_files_path/hdr_ppa.out;" \
-        "if test $? = \"0\"; then " \
-		"sf probe 0:0;" \
-		"sf erase ppa_hdr 40000;" \
-		"sf write $load_addr ppa_hdr $filesize;" \
+		"sf erase u-boot 200000;" \
+		"sf write $load_addr u-boot $filesize;" \
         "fi\0" \
 	"update_mmc_pfe_qspi_nor=" \
         "mmc rescan;" \
@@ -294,12 +337,68 @@
 		"sf erase pfe 40000;" \
 		"sf write $load_addr pfe $filesize;" \
         "fi\0" \
+	"update_mmc_ppa_qspi_nor=" \
+        "mmc rescan;" \
+        "ext4load mmc 0:1 $load_addr $update_files_path/ppa.itb;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase ppa 100000;" \
+		"sf write $load_addr ppa $filesize;" \
+        "fi\0" \
+	"update_mmc_spl_hdr_qspi_nor=" \
+        "mmc rescan;" \
+        "ext4load mmc 0:1 $load_addr $update_files_path/spl_hdr.out;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase spl_hdr 40000;" \
+		"sf write $load_addr spl_hdr $filesize;" \
+        "fi\0" \
+	"update_mmc_uboot_hdr_qspi_nor=" \
+        "mmc rescan;" \
+        "ext4load mmc 0:1 $load_addr $update_files_path/uboot_hdr.out;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase u-boot_hdr 40000;" \
+		"sf write $load_addr u-boot_hdr $filesize;" \
+        "fi\0" \
+	"update_mmc_pfe_hdr_qspi_nor=" \
+        "mmc rescan;" \
+        "ext4load mmc 0:1 $load_addr $update_files_path/pfe_fw_sbl_hdr.out;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase pfe_hdr 40000;" \
+		"sf write $load_addr pfe_hdr $filesize;" \
+        "fi\0" \
+	"update_mmc_ppa_hdr_qspi_nor=" \
+        "mmc rescan;" \
+        "ext4load mmc 0:1 $load_addr $update_files_path/ppa_hdr.out;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase ppa_hdr 40000;" \
+		"sf write $load_addr ppa_hdr $filesize;" \
+        "fi\0" \
+	"update_mmc_itb_hdr_qspi_nor=" \
+        "mmc rescan;" \
+        "ext4load mmc 0:1 $load_addr $update_files_path/trustbox_hdr.out;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase itb_hdr 40000;" \
+		"sf write $load_addr itb_hdr $filesize;" \
+        "fi\0" \
+	"update_mmc_itb_qspi_nor=" \
+        "mmc rescan;" \
+        "ext4load mmc 0:1 $load_addr $update_files_path/trustbox.itb;" \
+        "if test $? = \"0\"; then " \
+		"sf probe 0:0;" \
+		"sf erase itb 3b40000;" \
+		"sf write $load_addr itb $filesize;" \
+        "fi\0" \
 	"update_mmc_image_qspi_nor=" \
         "mmc rescan;" \
         "ext4load mmc 0:1 $load_addr $update_files_path/trustbox_qspi_fw.itb;" \
         "if test $? = \"0\"; then " \
 		"sf probe 0:0;" \
-		"sf erase 0 0x04000000;" \
+		"sf erase 0 4000000;" \
 		"sf write $load_addr 0 $filesize;" \
         "fi\0" \
 	"usbboot=" \
@@ -325,7 +424,7 @@
 	"scripthdraddr=0x80080000\0"		\
 	"fdtheader_addr_r=0x80100000\0"		\
 	"kernelheader_addr_r=0x80200000\0"	\
-	"kernel_addr_r=0x81000000\0"		\
+	"kernel_addr_r=0x82000000\0"		\
 	"fdt_addr_r=0x90000000\0"		\
 	"load_addr=0xa0000000\0"		\
 	"kernel_size=0x2800000\0"		\
