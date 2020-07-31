@@ -13,7 +13,7 @@
 
 #ifdef CONFIG_PBL_RCW_SECUREBOOT
 #define CONFIG_U_BOOT_HDR_SIZE 0x00040000
-#define CONFIG_U_BOOT_HDR_ADDR 0x40400000
+#define CONFIG_U_BOOT_HDR_ADDR 0x403c0000
 #endif
 
 /* Execute from OCRAM */
@@ -425,6 +425,7 @@
 	"fdtheader_addr_r=0x80100000\0"		\
 	"kernelheader_addr_r=0x80200000\0"	\
 	"kernel_addr_r=0x82000000\0"		\
+	"initrd_addr_r=0x98000000\0"		\
 	"fdt_addr_r=0x90000000\0"		\
 	"load_addr=0xa0000000\0"		\
 	"kernel_size=0x2800000\0"		\
