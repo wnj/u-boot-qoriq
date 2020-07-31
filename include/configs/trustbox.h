@@ -424,9 +424,10 @@
 	"scripthdraddr=0x80080000\0"		\
 	"fdtheader_addr_r=0x80100000\0"		\
 	"kernelheader_addr_r=0x80200000\0"	\
+	"initrdheader_addr_r=0x80300000\0"	\
+	"fdt_addr_r=0x90000000\0"		\
 	"kernel_addr_r=0x82000000\0"		\
 	"initrd_addr_r=0x98000000\0"		\
-	"fdt_addr_r=0x90000000\0"		\
 	"load_addr=0xa0000000\0"		\
 	"kernel_size=0x2800000\0"		\
 	"kernelheader_size=0x40000\0"		\
@@ -445,13 +446,13 @@
 			  "if test $? = \"0\"; then " \
 							 "setenv load_succes 0;"\
 			  "fi;"\
-			  "env exists secureboot && ext4load mmc 0:1 $fdtheader_addr_r /boot/hdr_dtb.out;"\
+			  "env exists secureboot && ext4load mmc 0:1 $fdtheader_addr_r /boot/trustbox_hdr.out;"\
 			  "env exists secureboot && esbc_validate $fdtheader_addr_r || esbc_halt;"\
 			  "ext4load mmc 0:1 $kernel_addr_r /boot/uImage;" \
 			  "if test $? = \"0\"; then " \
 							 "setenv load_succes 0;"\
 			  "fi;"\
-			  "env exists secureboot && ext4load mmc 0:1 $kernelheader_addr_r /boot/hdr_kernel.out; " \
+			  "env exists secureboot && ext4load mmc 0:1 $kernelheader_addr_r /boot/uImage_hdr.out; " \
 			  "env exists secureboot && esbc_validate $kernelheader_addr_r || esbc_halt;" \
 			  "if test $load_succes = \"0\"; then " \
 							 "pfe stop; mtdparts;" \
