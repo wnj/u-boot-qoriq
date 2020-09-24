@@ -2559,6 +2559,11 @@ int spi_nor_scan(struct spi_nor *nor)
 	nor->erase_size = mtd->erasesize;
 	nor->sector_size = mtd->erasesize;
 
+	/* update fsl qspi driver LUT for new flash size at runtime */
+	if(strcmp(nor->dev->parent->name, "quadspi@1550000") == 0) {
+		fsl_qspi_update_lut(nor->dev->parent->priv, nor->size);
+	}
+
 #ifndef CONFIG_SPL_BUILD
 	printf("SF: Detected %s with page size ", nor->name);
 	print_size(nor->page_size, ", erase size ");

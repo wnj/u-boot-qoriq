@@ -1490,6 +1490,18 @@ config TARGET_LS1046AFRWY
 	  The LS1046A Freeway Board (FRWY) is a high-performance
 	  development platform that supports the QorIQ LS1046A
 	  Layerscape Architecture processor.
+
+config TARGET_TRUSTBOX
+	bool "Support TrustBox"
+	select ARCH_LS1012A
+	select ARM64
+	select ARCH_SUPPORT_TFABOOT
+	select BOARD_LATE_INIT
+	imply SCSI
+	imply SCSI_AHCI
+	help
+	  Support for Scalys ls1012a based Trustbox platform.
+
 config TARGET_H2200
 	bool "Support h2200"
 	select CPU_PXA
@@ -1806,6 +1818,7 @@ source "board/hisilicon/hikey960/Kconfig"
 source "board/hisilicon/poplar/Kconfig"
 source "board/isee/igep003x/Kconfig"
 source "board/phytec/pcm051/Kconfig"
+source "board/scalys/trustbox/Kconfig"
 source "board/silica/pengwyn/Kconfig"
 source "board/spear/spear300/Kconfig"
 source "board/spear/spear310/Kconfig"
