@@ -38,20 +38,6 @@ static int recovery_mode_enabled = 0;
 
 DECLARE_GLOBAL_DATA_PTR;
 
-static inline void reset_eth_phys(void)
-{
-#ifdef CONFIG_TARGET_TRUSTBOX
-	/* Through reset IO expander reset both RGMII and SGMII PHYs */
-	i2c_reg_write(I2C_MUX_IO2_ADDR, 6, __PHY_MASK);
-	i2c_reg_write(I2C_MUX_IO2_ADDR, 2, __PHY_ETH2_MASK);
-	mdelay(10);
-	i2c_reg_write(I2C_MUX_IO2_ADDR, 2, __PHY_ETH1_MASK);
-	mdelay(10);
-	i2c_reg_write(I2C_MUX_IO2_ADDR, 2, 0xFF);
-	mdelay(50);
-#endif
-}
-
 int checkboard(void)
 {
 	struct ccsr_gpio *pgpio = (void *)(CONFIG_SYS_GPIO2);
@@ -150,8 +136,6 @@ int board_init(void)
 	 */
 	if (current_el() == 3)
 		out_le32(&cci->ctrl_ord, CCI400_CTRLORD_EN_BARRIER);
-
-	reset_eth_phys();
 
 #ifdef CONFIG_SYS_FSL_ERRATUM_A010315
 	erratum_a010315();

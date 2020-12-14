@@ -59,28 +59,6 @@
 #define CONFIG_SPI_FLASH_STMICRO
 #define CONFIG_SPI_FLASH_BAR
 
-/*
- * I2C IO expander
- */
-#define I2C_MUX_IO_ADDR		0x24
-#define I2C_MUX_IO2_ADDR	0x25
-#define I2C_MUX_IO_0		0
-#define I2C_MUX_IO_1		1
-#define SW_BOOT_MASK		0x03
-#define SW_BOOT_EMU		0x02
-#define SW_BOOT_BANK1		0x00
-#define SW_BOOT_BANK2		0x01
-#define SW_REV_MASK		0xF8
-#define SW_REV_A		0xF8
-#define SW_REV_B		0xF0
-#define SW_REV_C		0xE8
-#define SW_REV_C1		0xE0
-#define SW_REV_C2		0xD8
-#define SW_REV_D		0xD0
-#define SW_REV_E		0xC8
-#define __PHY_MASK		0xF9
-#define __PHY_ETH2_MASK		0xFB
-#define __PHY_ETH1_MASK		0xFD
 
 /*  MMC  */
 #ifdef CONFIG_MMC
@@ -441,6 +419,16 @@
 	COMMON_UBOOT_CONFIG \
 	BOOTENV \
 	"boot_scripts=trustbox_boot.scr trustbox_recovery.scr\0"	\
+	"boot_script_hdr=trustbox_boot.scr.hdr\0" \
+	"boot_a_script="				  \
+		"load ${devtype} ${devnum}:${distro_bootpart} "  \
+			"${scriptaddr} ${prefix}${script}; "    \
+		"env exists secureboot && load ${devtype} "     \
+			"${devnum}:${distro_bootpart} "		\
+			"${scripthdraddr} ${prefix}${boot_script_hdr}; " \
+			"env exists secureboot "	\
+			"&& esbc_validate ${scripthdraddr};"    \
+		"source ${scriptaddr}\0"	  \
 	"default_boot=" \
 			  "setenv load_succes 1;"\
 			  "ext4load mmc 0:1 $fdt_addr_r /boot/trustbox.dtb;" \
