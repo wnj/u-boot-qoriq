@@ -13,7 +13,7 @@
 #include <fsl_mdio.h>
 #include <malloc.h>
 
-#include "../common/fman.h"
+#include "../../freescale/common/fman.h"
 
 int board_eth_init(bd_t *bis)
 {
