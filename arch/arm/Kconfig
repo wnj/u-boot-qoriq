@@ -1248,7 +1248,7 @@ config TARGET_LS1046ARDB
 	  Layerscape Architecture processor.
 
 config TARGET_TRUSTBOX
-	bool "Support Trustbox"
+	bool "Support TrustBox"
 	select ARCH_LS1012A
 	select ARM64
 	select BOARD_LATE_INIT
@@ -1257,6 +1257,20 @@ config TARGET_TRUSTBOX
 	imply SCSI_AHCI
 	help
 	  Support for Scalys ls1012a based Trustbox platform.
+
+config TARGET_TRUSTBOX_XL
+	bool "Support TrustBox XL"
+	select ARCH_LS1046A
+	select ARM64
+	select ARMV8_MULTIENTRY
+	select BOARD_EARLY_INIT_F
+	select BOARD_LATE_INIT
+	select DM_SPI_FLASH if DM_SPI
+	select POWER_MC34VR500
+	select SUPPORT_SPL
+	imply SCSI
+	help
+	  Support for Scalys ls1046a based TrustBox XL platform.
 
 config TARGET_H2200
 	bool "Support h2200"
@@ -1527,6 +1541,7 @@ source "board/hisilicon/poplar/Kconfig"
 source "board/isee/igep003x/Kconfig"
 source "board/phytec/pcm051/Kconfig"
 source "board/scalys/trustbox/Kconfig"
+source "board/scalys/trustbox-xl/Kconfig"
 source "board/silica/pengwyn/Kconfig"
 source "board/spear/spear300/Kconfig"
 source "board/spear/spear310/Kconfig"

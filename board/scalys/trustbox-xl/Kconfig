@@ -1,0 +1,17 @@
+
+if TARGET_TRUSTBOX_XL
+
+config SYS_BOARD
+	default "trustbox-xl"
+
+config SYS_VENDOR
+	default "scalys"
+
+config SYS_SOC
+	default "fsl-layerscape"
+
+config SYS_CONFIG_NAME
+	default "trustbox-xl"
+
+source "board/freescale/common/Kconfig"
+endif
