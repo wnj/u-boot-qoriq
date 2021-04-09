@@ -21,15 +21,23 @@ static int scalys_carrier_init_rgmii_phy1(void);
 static int scalys_carrier_init_sfp_phys(void);
 static int scalys_carrier_init_retimer(void);
 
-/* Finistar FCLF-85 configuration (AN2036) */
+/* Tested module(s):
+ * FCLF-8522, UF-RJ45-1G, JD089BST
+ */
 uint8_t sfp_phy_config[][2] = {
 	{ 0x1b, 0x90 }, /* Enable SGMII mode */
 	{ 0x1b, 0x84 },
-	{ 0x09, 0x0F }, /* Adv. 1000BASE-T FD/HD */
+	{ 0x09, 0x0F }, /* Advertise 1000BASE-T H/Full */
 	{ 0x09, 0x00 },
-	{ 0x00, 0x81 }, /* Software reset */
+	{ 0x00, 0x81 }, /* Apply software reset */
+	{ 0x00, 0x40 },
+	{ 0x04, 0x0D }, /* Advertise 100/10BASE-T H/Full */
+	{ 0x04, 0xE1 },
+	{ 0x00, 0x91 }, /* Apply software reset */
 	{ 0x00, 0x40 },
 };
+
+#define SFP_PHY_CONFIG_ITEM_NBR (sizeof(sfp_phy_config) / 2)
 
 static int scalys_carrier_init_rgmii_phy0()
 {
@@ -168,7 +176,7 @@ static int scalys_carrier_init_sfp_phys()
 		if (ret) {
 			printf("Warning: No SFP PHY module detected on slot %i.\n", phy_addr);
 		} else {
-			for (int i = 0; i < 6; i++) {
+			for (int i = 0; i < SFP_PHY_CONFIG_ITEM_NBR; i++) {
 				ret = i2c_write(0x56, sfp_phy_config[i][0], 1, &(sfp_phy_config[i][1]), 1);
 				if (ret) {
 					printf("Error configuring SFP PHY on slot %i. (I2C Data: %d, Reg: %d).\n", phy_addr, sfp_phy_config[i][1], sfp_phy_config[i][0]);
