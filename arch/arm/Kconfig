@@ -1438,6 +1438,18 @@ config TARGET_LS1012AFRDM
 	  development platform that supports the QorIQ LS1012A
 	  Layerscape Architecture processor.
 
+config TARGET_TBE101
+	bool "Support Scalys Trustbox Edge 101"
+	select ARCH_LS1012A
+	select ARM64
+	select ARCH_SUPPORT_TFABOOT
+	select BOARD_LATE_INIT
+	imply SCSI
+	imply SCSI_AHCI
+	help
+	  Support for Scalys Trustbox Edge 101
+
+
 config TARGET_LS1028AQDS
 	bool "Support ls1028aqds"
 	select ARCH_LS1028A
@@ -2015,6 +2027,7 @@ source "board/hisilicon/poplar/Kconfig"
 source "board/isee/igep003x/Kconfig"
 source "board/kontron/sl28/Kconfig"
 source "board/myir/mys_6ulx/Kconfig"
+source "board/scalys/tbe101/Kconfig"
 source "board/spear/spear300/Kconfig"
 source "board/spear/spear310/Kconfig"
 source "board/spear/spear320/Kconfig"
